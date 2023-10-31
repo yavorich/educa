@@ -7,13 +7,14 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from .models import Course
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic.base import TemplateResponseMixin, View
+from django.views.generic.detail import DetailView
 from .forms import ModuleFormSet
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.forms.models import modelform_factory, ModelForm
 from django.apps import apps
-from django.db.models import Model
+from django.db.models import Model, Count
 from braces.views import CsrfExemptMixin, JsonRequestResponseMixin
-from .models import Module, Content
+from .models import Module, Content, Subject
 
 # Create your views here.
 
@@ -42,6 +43,9 @@ class OwnerCourseEditMixin(OwnerCourseMixin, OwnerEditMixin):
 
 
 class ManageCourseListView(OwnerCourseMixin, ListView):
+    '''
+    Для преподавателей (настройка курсов)
+    '''
     template_name = 'courses/manage/course/list.html'
     permission_required = 'courses.view_course'
 
@@ -187,3 +191,26 @@ class ContentOrderView(CsrfExemptMixin,
                 module__course__owner=request.user
             ).update(order=order)
         return self.render_json_response({'saved': 'OK'})
+
+
+class CourseListView(TemplateResponseMixin, View):
+    '''
+    Для студентов (отображение курсов)
+    '''
+    model = Course
+    template_name = 'courses/course/list.html'
+    
+    def get(self, request: HttpRequest, subject=None) -> HttpResponse:
+        subjects = Subject.objects.annotate(total_courses=Count('courses'))
+        courses = Course.objects.annotate(total_modules=Count('modules'))
+        if subject:
+            subject = get_object_or_404(Subject, slug=subject)
+            courses = courses.filter(subject=subject)
+        return self.render_to_response({'subjects': subjects,
+                                        'subject': subject,
+                                        'courses': courses})
+
+
+class CourseDetailView(DetailView):
+    model = Course
+    template_name = 'courses/course/detail.html'
