@@ -15,6 +15,7 @@ from django.apps import apps
 from django.db.models import Model, Count
 from braces.views import CsrfExemptMixin, JsonRequestResponseMixin
 from .models import Module, Content, Subject
+from students.forms import CourseEnrollForm
 
 # Create your views here.
 
@@ -114,7 +115,8 @@ class ContentCreateUpdateView(TemplateResponseMixin, View):
                                                  'updated'])
         return Form(*args, **kwargs)
     
-    def dispatch(self, request: HttpRequest, module_id: Any, model_name: str, id: Any=None) -> HttpResponse:
+    def dispatch(self, request: HttpRequest, module_id: Any, 
+                 model_name: str, id: Any=None) -> HttpResponse:
         self.module = get_object_or_404(Module,
                                         id=module_id,
                                         course__owner=request.user)
@@ -125,12 +127,14 @@ class ContentCreateUpdateView(TemplateResponseMixin, View):
                                          owner=request.user)
         return super().dispatch(request, module_id, model_name, id)
     
-    def get(self, request: HttpRequest, module_id: Any, model_name: str, id: Any=None) -> HttpResponse:
+    def get(self, request: HttpRequest, module_id: Any, 
+            model_name: str, id: Any=None) -> HttpResponse:
         form = self.get_form(self.model, instance=self.obj)
         return self.render_to_response({'form': form,
                                         'object': self.obj})
     
-    def post(self, request: HttpRequest, module_id: Any, model_name: str, id: Any=None) -> HttpResponse:
+    def post(self, request: HttpRequest, module_id: Any, 
+             model_name: str, id: Any=None) -> HttpResponse:
         form = self.get_form(self.model,
                              instance=self.obj,
                              data=request.POST,
@@ -214,3 +218,13 @@ class CourseListView(TemplateResponseMixin, View):
 class CourseDetailView(DetailView):
     model = Course
     template_name = 'courses/course/detail.html'
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        '''
+        этот метод переопределяется для добавления аргументов
+        в контекст прорисовки шаблона
+        '''
+        context = super().get_context_data(**kwargs)
+        context['enroll_form'] = CourseEnrollForm(
+            initial={'course': self.object})
+        return context
