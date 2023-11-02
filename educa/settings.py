@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'embed_video',
     'debug_toolbar',
     'redisboard',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -152,6 +153,13 @@ INTERNAL_IPS = [
     '127.0.0.1',
 ]
 
+# Конфигурация API
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
+    ]
+}
 '''
 Cайтовый кеш непригоден для многих сайтов, поскольку он влияет на
 все представления, даже те, которые вы, возможно, не хотите кешировать,
