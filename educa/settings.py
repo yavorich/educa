@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'redisboard',
     'rest_framework',
     'chat',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -161,6 +162,9 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
     ]
 }
+
+ASGI_APPLICATION = 'educa.asgi.application'
+
 '''
 Cайтовый кеш непригоден для многих сайтов, поскольку он влияет на
 все представления, даже те, которые вы, возможно, не хотите кешировать,
