@@ -10,6 +10,8 @@
         <div id="header">
             <a href="/" class="logo">Educa</a>
             <ul class="menu">
+                <li><a href="{% url "students:student_course_list" %}">My courses</a></li>
+                <li><a href="{% url "course_list" %}">All courses</a></li>
                 {% if request.user.is_authenticated %}
                     <li><a href="{% url "logout" %}">Sign out</a></li>
                 {% else %}
