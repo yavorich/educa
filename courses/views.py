@@ -234,6 +234,14 @@ class CourseDetailView(DetailView):
     model = Course
     template_name = 'courses/course/detail.html'
 
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        if self.request.user.is_authenticated:
+            object_id = self.get_object().id
+            if request.user.courses_joined.filter(id=object_id).exists():
+                return redirect('students:student_course_detail',
+                                object_id)
+        return super().get(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         '''
         этот метод переопределяется для добавления аргументов
