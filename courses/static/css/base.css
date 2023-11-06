@@ -68,6 +68,13 @@ h1 {
     color:#fff;
 }
 
+#header li {
+    display: block;
+    float: left;
+    width: 100px;
+    margin-right: 2px;
+}
+
 #header .menu {
     list-style:none;
     float:right;
