@@ -17,7 +17,7 @@ from courses.models import Course
 class StudentRegistrationView(CreateView):
     template_name = 'students/student/registration.html'
     form_class = UserCreationForm
-    success_url = reverse_lazy('student_course_list')
+    success_url = reverse_lazy('students:student_course_list')
     
     def form_valid(self, form):
         result = super().form_valid(form)
@@ -39,7 +39,7 @@ class StudentEnrollCourseView(LoginRequiredMixin,
         return super().form_valid(form)
     
     def get_success_url(self) -> str:
-        return reverse_lazy('student_course_detail',
+        return reverse_lazy('students:student_course_detail',
                             args=[self.course.id])
 
 
