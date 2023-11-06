@@ -10,12 +10,21 @@ https://docs.djangoproject.com/en/4.1/howto/deployment/asgi/
 import os
 
 from django.core.asgi import get_asgi_application
-from channels.routing import ProtocolTypeRouter
+from channels.routing import ProtocolTypeRouter, URLRouter
+from channels.auth import AuthMiddlewareStack
+from chat import routing
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'educa.settings')
 
 django_asgi_app = get_asgi_application()
 
 application = ProtocolTypeRouter({
-    'http': django_asgi_app
+    'http': django_asgi_app,
+    # класс AuthMiddlewareStack поддерживает встроенную в Django стандартную
+    # аутентификацию, при которой детальная информация о пользователе хранится в сеансе
+    'websocket': AuthMiddlewareStack(
+        # URLRouter используется для соотнесения соединений websocket
+        # с шаблонами URL-адресов, определенными в списке websocket_urlpatterns
+        URLRouter(routing.websocket_urlpatterns)
+    ),
 })
