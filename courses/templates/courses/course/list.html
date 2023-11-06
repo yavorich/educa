@@ -39,6 +39,9 @@
         {% for course in courses %}
             {% with subject=course.subject %}
                 <h3>
+                    {% if course in user.courses_joined.all %}
+                        <span class="status-enrolled">enrolled</span>
+                    {% endif %}
                     <a href="{% url "course_detail" course.slug %}">
                         {{ course.title }}
                     </a>
