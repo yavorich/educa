@@ -165,6 +165,15 @@ REST_FRAMEWORK = {
 
 ASGI_APPLICATION = 'educa.asgi.application'
 
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('127.0.0.1', 6379)],
+        },
+    },
+}
+
 '''
 Cайтовый кеш непригоден для многих сайтов, поскольку он влияет на
 все представления, даже те, которые вы, возможно, не хотите кешировать,
