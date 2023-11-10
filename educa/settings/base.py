@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-w$c4$t+d(qqwr*clc9#psbhwz%jtk%r19cp_&(n&dgi(jva-&2'
+SECRET_KEY = 'cqzc@*xf39=%f-5#xmi5z5jh@y!f=epsv9xicm%e+zdcb3e*gr'
 
 ALLOWED_HOSTS = []
 
@@ -56,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'courses.middleware.subdomain_course_middleware',
 ]
 
 ROOT_URLCONF = 'educa.urls'
@@ -159,6 +160,8 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+STATIC_ROOT = BASE_DIR / 'static'
 
 '''
 Cайтовый кеш непригоден для многих сайтов, поскольку он влияет на
