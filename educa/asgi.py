@@ -11,6 +11,7 @@ import os
 
 from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
+from channels.security.websocket import AllowedHostsOriginValidator
 from channels.auth import AuthMiddlewareStack
 from chat import routing
 
@@ -22,9 +23,11 @@ application = ProtocolTypeRouter({
     'http': django_asgi_app,
     # класс AuthMiddlewareStack поддерживает встроенную в Django стандартную
     # аутентификацию, при которой детальная информация о пользователе хранится в сеансе
-    'websocket': AuthMiddlewareStack(
-        # URLRouter используется для соотнесения соединений websocket
-        # с шаблонами URL-адресов, определенными в списке websocket_urlpatterns
-        URLRouter(routing.websocket_urlpatterns)
+    'websocket': AllowedHostsOriginValidator(
+        AuthMiddlewareStack(
+            # URLRouter используется для соотнесения соединений websocket
+            # с шаблонами URL-адресов, определенными в списке websocket_urlpatterns
+            URLRouter(routing.websocket_urlpatterns)
+        )
     ),
 })
